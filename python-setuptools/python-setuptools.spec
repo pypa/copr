@@ -1,11 +1,12 @@
 %if 0%{?fedora}
 %global with_python3 1
-%global with_check 1
 
 # This controls whether setuptools is build as a wheel or not,
 # simplifying Python 3.4 bootstraping process
-%if %{fedora} > 21
+%if %{fedora} > 20
 %global build_wheel 1
+# the used pytest features only work with pytest in F21 and higher
+%global with_check 1
 %endif
 
 %else
@@ -27,7 +28,7 @@
 
 Name:           python-setuptools
 Version:        11.3.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Easily build and distribute Python packages
 
 Group:          Applications/System
@@ -208,6 +209,10 @@ popd
 %endif # with_python3
 
 %changelog
+* Fri Jan 09 2015 Slavek Kabrda <bkabrda@redhat.com> - 11.3.1-3
+- Fix the conditional for building wheels
+- Only run tests on Fedora > 20
+
 * Fri Jan 09 2015 Slavek Kabrda <bkabrda@redhat.com> - 11.3.1-2
 - Huge spec cleanup
 - Make spec buildable on all Fedoras and RHEL 6 and 7
