@@ -1,11 +1,18 @@
 %if 0%{?fedora}
 %global with_python3 1
+%global with_check 1
 
 # This controls whether setuptools is build as a wheel or not,
 # simplifying Python 3.4 bootstraping process
+%if %{fedora} > 21
 %global build_wheel 1
+%endif
+
 %else
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print (get_python_lib())")}
+%global with_check 0
+# define some macros for RHEL 6
+%global __python2 %__python
+%global python2_sitelib %python_sitelib
 %endif
 
 %global srcname setuptools
@@ -20,7 +27,7 @@
 
 Name:           python-setuptools
 Version:        11.3.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Easily build and distribute Python packages
 
 Group:          Applications/System
@@ -29,29 +36,33 @@ URL:            http://pypi.python.org/pypi/%{srcname}
 Source0:        http://pypi.python.org/packages/source/s/%{srcname}/%{srcname}-%{version}.tar.gz
 Source1:        psfl.txt
 Source2:        zpl.txt
-
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+# https://bitbucket.org/pypa/setuptools/pull-request/116
+Patch0:         setuptools-fix-pytest-contexts.patch
 
 BuildArch:      noarch
 # Require this so that we use a system copy of the match_hostname() function
-Requires: python-backports-ssl_match_hostname
-BuildRequires: python-backports-ssl_match_hostname
+Requires:       python-backports-ssl_match_hostname
+BuildRequires:  python-backports-ssl_match_hostname
 BuildRequires:  python2-devel
 %if 0%{?build_wheel}
 BuildRequires:  python-pip
 BuildRequires:  python-wheel
 %endif
+%if 0%{?with_check}
+BuildRequires:  pytest python-mock
+%endif # with_check
+
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
+%if 0%{?with_check}
 BuildRequires:  python3-pytest
 BuildRequires:  python3-mock
+%endif # with_check
 %if 0%{?build_wheel}
 BuildRequires:  python3-pip
 BuildRequires:  python3-wheel
-%endif
-%endif # if with_python3
-# For unittests
-BuildRequires: subversion pytest python-mock
+%endif # build_wheel
+%endif # with_python3
 
 # We're now back to setuptools as the package.
 # Keep the python-distribute name active for a few releases.  Eventually we'll
@@ -89,34 +100,33 @@ execute the software that requires pkg_resources.py.
 %prep
 %setup -q -n %{srcname}-%{version}
 
-# Remove bundled egg-info
-rm -rf *.egg*
+%patch0 -p1
+
+# We can't remove .egg-info (but it doesn't matter, since it'll be rebuilt):
+#  The problem is that to properly execute setuptools' setup.py,
+#   it is needed for setuptools to be loaded as a Distribution
+#   (with egg-info or .dist-info dir), it's not sufficient
+#   to just have them on PYTHONPATH
+#  Running "setup.py install" without having setuptools installed
+#   as a distribution gives warnings such as
+#    ... distutils/dist.py:267: UserWarning: Unknown distribution option: 'entry_points'
+#   and doesn't create "easy_install" and .egg-info directory
+# Note: this is only a problem if bootstrapping wheel or building on RHEL,
+#  otherwise setuptools are installed as dependency into buildroot
 
 # Remove bundled exes
 rm -f setuptools/*.exe
 
-find -name '*.txt' -exec chmod -x \{\} \;
-find . -name '*.orig' -exec rm \{\} \;
-
 %if 0%{?with_python3}
 rm -rf %{py3dir}
 cp -a . %{py3dir}
-pushd %{py3dir}
-for file in setuptools/command/easy_install.py ; do
-    sed -i '1s|^#!python|#!%{__python3}|' $file
-done
-popd
 %endif # with_python3
-
-for file in setuptools/command/easy_install.py ; do
-    sed -i '1s|^#!python|#!%{__python}|' $file
-done
 
 %build
 %if 0%{?build_wheel}
 %{__python} setup.py bdist_wheel
 %else
-CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
+%{__python} setup.py build
 %endif
 
 %if 0%{?with_python3}
@@ -124,18 +134,15 @@ pushd %{py3dir}
 %if 0%{?build_wheel}
 %{__python3} setup.py bdist_wheel
 %else
-CFLAGS="$RPM_OPT_FLAGS" %{__python3} setup.py build
+%{__python3} setup.py build
 %endif
 popd
 %endif # with_python3
 
 %install
-rm -rf %{buildroot}
-
 # Must do the python3 install first because the scripts in /usr/bin are
 # overwritten with every setup.py install (and we want the python2 version
 # to be the default for now).
-# Change to defaulting to python3 version in F22
 %if 0%{?with_python3}
 pushd %{py3dir}
 %if 0%{?build_wheel}
@@ -176,21 +183,18 @@ install -p -m 0644 %{SOURCE1} %{SOURCE2} .
 find %{buildroot}%{python2_sitelib} -name '*.exe' | xargs rm -f
 chmod +x %{buildroot}%{python2_sitelib}/setuptools/command/easy_install.py
 
+%if 0%{?with_check}
 %check
-LANG=en_GB.utf8 LC_ALL=en_GB.utf8 %{__python2} setup.py test
+LANG=en_US.utf8 PYTHONPATH=$(pwd) py.test
 
 %if 0%{?with_python3}
 pushd %{py3dir}
-LANG=en_GB.utf8 LC_ALL=en_GB.utf8 %{__python3} setup.py test
+LANG=en_US.utf8 PYTHONPATH=$(pwd) py.test-%{python3_version}
 popd
 %endif # with_python3
-
-%clean
-rm -rf %{buildroot}
-
+%endif # with_check
 
 %files
-%defattr(-,root,root,-)
 %doc *.txt docs
 %{python2_sitelib}/*
 %{_bindir}/easy_install
@@ -198,13 +202,17 @@ rm -rf %{buildroot}
 
 %if 0%{?with_python3}
 %files -n python3-setuptools
-%defattr(-,root,root,-)
 %doc psfl.txt zpl.txt docs
 %{python3_sitelib}/*
 %{_bindir}/easy_install-3.*
 %endif # with_python3
 
 %changelog
+* Fri Jan 09 2015 Slavek Kabrda <bkabrda@redhat.com> - 11.3.1-2
+- Huge spec cleanup
+- Make spec buildable on all Fedoras and RHEL 6 and 7
+- Make tests actually run
+
 * Wed Jan 07 2015 Kevin Fenzi <kevin@scrye.com> 11.3.1-1
 - Update to 11.3.1. Fixes bugs: #1179393 and #1178817
 
