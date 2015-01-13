@@ -3,23 +3,21 @@
 %bcond_without python3
 %else
 %bcond_with python3
+
+%if 0%{?rhel} < 7
+%global rhel6 1
+%endif
+
 %endif
 
 Name:           python-%{pypi_name}
 Version:        0.24.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A built-package format for Python
 
 License:        MIT
 URL:            http://bitbucket.org/dholth/wheel/
 Source0:        https://pypi.python.org/packages/source/w/%{pypi_name}/%{pypi_name}-%{version}.tar.gz
-# Some test files are not present in tarball, so we include them separately.
-# Upstream pull request to include the files in tarball:
-# https://bitbucket.org/dholth/wheel/pull-request/34 (Patch0 below)
-# (version 0.22 doesn't have a tag, so we're using commit hash to point to the
-#  correct testing wheel)
-Source1:        https://bitbucket.org/dholth/wheel/src/099352e/wheel/test/test-1.0-py2.py3-none-win32.whl
-Source2:        https://bitbucket.org/dholth/wheel/raw/099352e/wheel/test/pydist-schema.json
 BuildArch:      noarch
 
 BuildRequires:  python-devel
@@ -28,6 +26,10 @@ BuildRequires:  python-setuptools
 BuildRequires:  pytest
 BuildRequires:  python-jsonschema
 BuildRequires:  python-keyring
+%if 0%{?rhel6}
+BuildRequires:  python-argparse
+Requires:       python-argparse
+%endif
 
 %if %{with python3}
 BuildRequires:  python3-devel
@@ -59,12 +61,6 @@ This is package contains Python 3 version of the package.
 
 %prep
 %setup -q -n %{pypi_name}-%{version}
-
-# copy test files in place
-cp %{SOURCE1} %{pypi_name}/test/
-cp %{SOURCE2} %{pypi_name}/test/
-# header files just has to be there, even empty
-touch %{pypi_name}/test/headers.dist/header.h
 
 # remove unneeded shebangs
 sed -ie '1d' %{pypi_name}/{egg2wheel,wininst2wheel}.py
@@ -104,7 +100,7 @@ popd
 %check
 # remove setup.cfg that makes pytest require pytest-cov (unnecessary dep)
 rm setup.cfg
-PYTHONPATH=$(pwd) py.test --ignore build
+PYTHONPATH=$(pwd) py.test --ignore build %{?rhel6:-k 'not test_keygen'}
 # no test for Python 3, no python3-jsonschema yet
 %if 0
 pushd %{py3dir}
@@ -130,6 +126,10 @@ popd
 
 
 %changelog
+* Tue Jan 13 2015 Slavek Kabrda <bkabrda@redhat.com> - 0.24.0-3
+- Make spec buildable in EPEL 6, too.
+- Remove additional sources added to upstream tarball.
+
 * Sat Jan 03 2015 Matej Cepl <mcepl@redhat.com> - 0.24.0-2
 - Make python3 conditional (switched off for RHEL-7; fixes #1131111).
 
