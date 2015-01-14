@@ -1,11 +1,15 @@
-# sitelib for noarch packages
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
-
+%if 0%{?fedora}
 %global with_python3 1
+%else
+%if 0%{?rhel} < 7
+%global __python2 %__python
+%global python2_sitelib %python_sitelib
+%endif
+%endif
 
 Name:           python-virtualenv
-Version:        1.11.6
-Release:        2%{?dist}
+Version:        12.0.5
+Release:        1%{?dist}
 Summary:        Tool to create isolated Python environments
 
 Group:          Development/Languages
@@ -20,7 +24,7 @@ BuildRequires:  python2-devel
 BuildRequires:  python-sphinx
 %endif
 
-%if %{?with_python3}
+%if 0%{?with_python3}
 BuildRequires:  python3-devel
 
 %if 0%{?fedora}
@@ -116,8 +120,10 @@ popd
 %endif
 
 
-
 %changelog
+* Wed Jan 14 2015 Slavek Kabrda <bkabrda@redhat.com> - 12.0.5-1
+- Update to 12.0.5
+
 * Wed Dec 10 2014 Matej Stuchlik <mstuchli@redhat.com> - 1.11.6-2
 - Add Python 3 subpackage
 
