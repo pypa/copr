@@ -16,7 +16,7 @@ Release:        3%{?dist}
 Summary:        A built-package format for Python
 
 License:        MIT
-URL:            http://bitbucket.org/dholth/wheel/
+URL:            https://bitbucket.org/pypa/wheel
 Source0:        https://pypi.python.org/packages/source/w/%{pypi_name}/%{pypi_name}-%{version}.tar.gz
 BuildArch:      noarch
 
