@@ -9,7 +9,7 @@
 
 Name:           python-virtualenv
 Version:        12.0.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Tool to create isolated Python environments
 
 Group:          Development/Languages
@@ -106,7 +106,8 @@ popd
 %endif
 
 %{python2_sitelib}/*
-%{_bindir}/virtualenv*
+%{_bindir}/virtualenv
+%{_bindir}/virtualenv-2*
 
 %if 0%{?with_python3}
 %files -n python3-virtualenv
@@ -117,10 +118,14 @@ popd
 %endif
 
 %{python3_sitelib}/*
+%{_bindir}/virtualenv-3*
 %endif
 
 
 %changelog
+* Wed Jan 14 2015 Slavek Kabrda <bkabrda@redhat.com> - 12.0.5-2
+- /usr/bin/virtualenv-3.X has to be in python3-virtualenv, not in python-virtualenv.
+
 * Wed Jan 14 2015 Slavek Kabrda <bkabrda@redhat.com> - 12.0.5-1
 - Update to 12.0.5
 
