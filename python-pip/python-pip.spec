@@ -1,10 +1,13 @@
-%if (! 0%{?rhel}) || 0%{?rhel} > 7
+# turn of test suite for now, we'll reenable once the Fedora's
+#  patch for skipping network tests is upstreamable and upstreamed :)
+%global with_tests 0
+
+%if 0%{?fedora}
 %global with_python3 1
+
+%if 0%{?fedora} > 20
 %global build_wheel 1
-%global with_tests 1
 %endif
-%if 0%{?rhel} && 0%{?rhel} < 6
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %endif
 
 %global srcname pip
@@ -16,8 +19,8 @@
 %endif
 
 Name:           python-%{srcname}
-Version:        1.5.6
-Release:        5%{?dist}
+Version:        6.0.6
+Release:        1%{?dist}
 Summary:        A tool for installing and managing Python packages
 
 Group:          Development/Libraries
@@ -25,17 +28,7 @@ License:        MIT
 URL:            http://www.pip-installer.org
 Source0:        http://pypi.python.org/packages/source/p/pip/%{srcname}-%{version}.tar.gz
 
-# to get tests:
-# git clone https://github.com/pypa/pip && cd fig
-# git checkout 1.5.6 && tar -czvf pip-1.5.6-tests.tar.gz tests/
-Source1:        pip-1.5.6-tests.tar.gz
-
-Patch0:         pip-1.5rc1-allow-stripping-prefix-from-wheel-RECORD-files.patch
-# patch by dstufft, more at http://seclists.org/oss-sec/2014/q4/655
-Patch1:         local-dos.patch
-Patch2:         skip-network-tests.patch
-
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Patch0:         pip-6.0-allow-stripping-prefix-from-wheel-RECORD-files.patch
 
 BuildArch:      noarch
 BuildRequires:  python-devel
@@ -81,11 +74,8 @@ easy_installable should be pip-installable as well.
 
 %prep
 %setup -q -n %{srcname}-%{version}
-tar -xf %{SOURCE1}
 
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 %{__sed} -i '1d' pip/__init__.py
 
@@ -113,8 +103,6 @@ popd
 
 
 %install
-%{__rm} -rf %{buildroot}
-
 %if 0%{?with_python3}
 pushd %{py3dir}
 %if 0%{?build_wheel}
@@ -138,29 +126,24 @@ pip2 install -I dist/%{python2_wheelname} --root %{buildroot} --strip-file-prefi
 python setup.py test
 %endif
 
-
-%clean
-%{__rm} -rf %{buildroot}
-
-# unfortunately, pip's test suite requires virtualenv >= 1.6 which isn't in
-# fedora yet. Once it is, check can be implemented
-
 %files
-%defattr(-,root,root,-)
 %doc LICENSE.txt README.rst docs
-%attr(755,root,root) %{_bindir}/pip
-%attr(755,root,root) %{_bindir}/pip2*
+%{_bindir}/pip
+%{_bindir}/pip2*
 %{python_sitelib}/pip*
 
 %if 0%{?with_python3}
 %files -n python3-pip
-%defattr(-,root,root,-)
 %doc LICENSE.txt README.rst docs
-%attr(755,root,root) %{_bindir}/pip3*
+%{_bindir}/pip3*
 %{python3_sitelib}/pip*
 %endif # with_python3
 
 %changelog
+* Wed Jan 14 2015 Slavek Kabrda <bkabrda@redhat.com> - 6.0.6-1
+- Updated to 6.0.6
+- Specfile cleanup and fixes for copr pypa repo.
+
 * Thu Dec 18 2014 Slavek Kabrda <bkabrda@redhat.com> - 1.5.6-5
 - Only enable tests on Fedora.
 
