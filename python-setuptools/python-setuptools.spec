@@ -27,8 +27,8 @@
 %endif
 
 Name:           python-setuptools
-Version:        11.3.1
-Release:        3%{?dist}
+Version:        12.0.3
+Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 
 Group:          Applications/System
@@ -209,6 +209,9 @@ popd
 %endif # with_python3
 
 %changelog
+* Tue Jan 20 2015 Donald Stufft <donald@stufft.io> - 12.0.3-1
+- Update to 12.0.3
+
 * Fri Jan 09 2015 Slavek Kabrda <bkabrda@redhat.com> - 11.3.1-3
 - Fix the conditional for building wheels
 - Only run tests on Fedora > 20
