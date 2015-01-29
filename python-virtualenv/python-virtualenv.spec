@@ -8,8 +8,8 @@
 %endif
 
 Name:           python-virtualenv
-Version:        12.0.5
-Release:        2%{?dist}
+Version:        12.0.6
+Release:        1%{?dist}
 Summary:        Tool to create isolated Python environments
 
 Group:          Development/Languages
@@ -123,6 +123,9 @@ popd
 
 
 %changelog
+* Wed Jan 28 2015 Donald Stufft <donald@stufft.io> - 12.0.6-1
+- Update to 12.0.6
+
 * Wed Jan 14 2015 Slavek Kabrda <bkabrda@redhat.com> - 12.0.5-2
 - /usr/bin/virtualenv-3.X has to be in python3-virtualenv, not in python-virtualenv.
 

@@ -19,7 +19,7 @@
 %endif
 
 Name:           python-%{srcname}
-Version:        6.0.6
+Version:        6.0.7
 Release:        1%{?dist}
 Summary:        A tool for installing and managing Python packages
 
@@ -140,6 +140,9 @@ python setup.py test
 %endif # with_python3
 
 %changelog
+* Wed Jan 28 2015 Donald Stufft <donald@stufft.io> - 6.0.7-1
+- Update to 6.0.7
+
 * Wed Jan 14 2015 Slavek Kabrda <bkabrda@redhat.com> - 6.0.6-1
 - Updated to 6.0.6
 - Specfile cleanup and fixes for copr pypa repo.
