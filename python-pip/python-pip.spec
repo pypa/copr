@@ -19,7 +19,7 @@
 %endif
 
 Name:           python-%{srcname}
-Version:        6.0.7
+Version:        6.0.8
 Release:        1%{?dist}
 Summary:        A tool for installing and managing Python packages
 
@@ -140,6 +140,9 @@ python setup.py test
 %endif # with_python3
 
 %changelog
+* Thu Feb 12 2015 Donald Stufft <donald@stufft.io> - 6.0.8-1
+- Update to 6.0.8
+
 * Wed Jan 28 2015 Donald Stufft <donald@stufft.io> - 6.0.7-1
 - Update to 6.0.7
 
