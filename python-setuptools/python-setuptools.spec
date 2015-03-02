@@ -27,7 +27,7 @@
 %endif
 
 Name:           python-setuptools
-Version:        12.2
+Version:        12.3
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 
@@ -205,6 +205,9 @@ popd
 %endif # with_python3
 
 %changelog
+* Mon Mar 02 2015 Donald Stufft <donald@stufft.io> - 12.3-1
+- Update to 12.3
+
 * Mon Feb 23 2015 Donald Stufft <donald@stufft.io> - 12.2-1
 - Update to 12.2
 
