@@ -20,7 +20,7 @@
 
 Name:           python-%{srcname}
 Version:        7.0.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        A tool for installing and managing Python packages
 
 Group:          Development/Libraries
@@ -28,7 +28,7 @@ License:        MIT
 URL:            http://www.pip-installer.org
 Source0:        http://pypi.python.org/packages/source/p/pip/%{srcname}-%{version}.tar.gz
 
-Patch0:         pip-6.0-allow-stripping-prefix-from-wheel-RECORD-files.patch
+Patch0:         pip-7.0-allow-stripping-prefix-from-wheel-RECORD-files.patch
 
 BuildArch:      noarch
 BuildRequires:  python-devel
@@ -140,6 +140,9 @@ python setup.py test
 %endif # with_python3
 
 %changelog
+* Mon Jun 22 2015 Donald Stufft <donald@stufft.io> - 7.0.3-2
+- Fix the patch so it applies cleanly against 7.0
+
 * Mon Jun 22 2015 Donald Stufft <donald@stufft.io> - 7.0.3-1
 - Update to 7.0.3
 
