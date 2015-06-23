@@ -27,7 +27,7 @@
 %endif
 
 Name:           python-setuptools
-Version:        12.3
+Version:        17.1.1
 Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 
@@ -205,6 +205,9 @@ popd
 %endif # with_python3
 
 %changelog
+* Mon Jun 22 2015 Donald Stufft <donald@stufft.io> - 17.1.1-1
+- Update to 17.1.1
+
 * Mon Mar 02 2015 Donald Stufft <donald@stufft.io> - 12.3-1
 - Update to 12.3
 
@@ -421,7 +424,7 @@ popd
 
 * Thu Feb 04 2010 Toshio Kuratomi <toshio@fedoraproject.org> - 0.6.10-3
 - First build with python3 support enabled.
-  
+
 * Fri Jan 29 2010 Toshio Kuratomi <toshio@fedoraproject.org> - 0.6.10-2
 - Really disable the python3 portion
 

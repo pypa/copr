@@ -19,7 +19,7 @@
 %endif
 
 Name:           python-%{srcname}
-Version:        6.0.8
+Version:        7.0.3
 Release:        1%{?dist}
 Summary:        A tool for installing and managing Python packages
 
@@ -140,6 +140,9 @@ python setup.py test
 %endif # with_python3
 
 %changelog
+* Mon Jun 22 2015 Donald Stufft <donald@stufft.io> - 7.0.3-1
+- Update to 7.0.3
+
 * Thu Feb 12 2015 Donald Stufft <donald@stufft.io> - 6.0.8-1
 - Update to 6.0.8
 
@@ -239,7 +242,7 @@ python setup.py test
 * Fri Jan 1 2010 Peter Halliday <phalliday@excelsiorsystems.net> - 0.6.1.4
 - fix dependency issue
 * Fri Dec 18 2009 Peter Halliday <phalliday@excelsiorsystems.net> - 0.6.1-2
-- fix spec file 
+- fix spec file
 * Thu Dec 17 2009 Peter Halliday <phalliday@excelsiorsystems.net> - 0.6.1-1
 - upgrade to 0.6.1 of pip
 * Mon Aug 31 2009 Peter Halliday <phalliday@excelsiorsystems.net> - 0.4-1

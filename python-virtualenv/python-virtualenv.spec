@@ -8,7 +8,7 @@
 %endif
 
 Name:           python-virtualenv
-Version:        12.0.7
+Version:        13.0.3
 Release:        1%{?dist}
 Summary:        Tool to create isolated Python environments
 
@@ -59,7 +59,7 @@ licensed under an MIT-style permissive license
 
 %prep
 %setup -q -n virtualenv-%{version}
-%{__sed} -i -e "1s|#!/usr/bin/env python||" virtualenv.py 
+%{__sed} -i -e "1s|#!/usr/bin/env python||" virtualenv.py
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -123,6 +123,9 @@ popd
 
 
 %changelog
+* Mon Jun 22 2015 Donald Stufft <donald@stufft.io> - 13.0.3-1
+- Update to 13.0.3
+
 * Thu Feb 12 2015 Donald Stufft <donald@stufft.io> - 12.0.7-1
 - Update to 12.0.7
 
