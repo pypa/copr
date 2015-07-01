@@ -19,8 +19,8 @@
 %endif
 
 Name:           python-%{srcname}
-Version:        7.0.3
-Release:        2%{?dist}
+Version:        7.1.0
+Release:        1%{?dist}
 Summary:        A tool for installing and managing Python packages
 
 Group:          Development/Libraries
@@ -140,6 +140,9 @@ python setup.py test
 %endif # with_python3
 
 %changelog
+* Mon Jul 01 2015 Donald Stufft <donald@stufft.io> - 7.1.0-1
+- Update to 7.1.0
+
 * Mon Jun 22 2015 Donald Stufft <donald@stufft.io> - 7.0.3-2
 - Fix the patch so it applies cleanly against 7.0
 

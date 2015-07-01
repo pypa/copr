@@ -8,7 +8,7 @@
 %endif
 
 Name:           python-virtualenv
-Version:        13.0.3
+Version:        13.1.0
 Release:        1%{?dist}
 Summary:        Tool to create isolated Python environments
 
@@ -123,6 +123,9 @@ popd
 
 
 %changelog
+* Mon Jul 01 2015 Donald Stufft <donald@stufft.io> - 13.1.0-1
+- Update to 13.1.0
+
 * Mon Jun 22 2015 Donald Stufft <donald@stufft.io> - 13.0.3-1
 - Update to 13.0.3
 
