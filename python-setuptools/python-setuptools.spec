@@ -205,7 +205,7 @@ popd
 %endif # with_python3
 
 %changelog
-* Mon Jul 01 2015 Donald Stufft <donald@stufft.io> - 18.0.1-1
+* Wed Jul 01 2015 Donald Stufft <donald@stufft.io> - 18.0.1-1
 - Update to 18.0.1
 
 * Mon Jun 22 2015 Donald Stufft <donald@stufft.io> - 17.1.1-1

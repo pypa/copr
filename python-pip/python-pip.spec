@@ -140,7 +140,7 @@ python setup.py test
 %endif # with_python3
 
 %changelog
-* Mon Jul 01 2015 Donald Stufft <donald@stufft.io> - 7.1.0-1
+* Wed Jul 01 2015 Donald Stufft <donald@stufft.io> - 7.1.0-1
 - Update to 7.1.0
 
 * Mon Jun 22 2015 Donald Stufft <donald@stufft.io> - 7.0.3-2

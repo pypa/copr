@@ -123,7 +123,7 @@ popd
 
 
 %changelog
-* Mon Jul 01 2015 Donald Stufft <donald@stufft.io> - 13.1.0-1
+* Wed Jul 01 2015 Donald Stufft <donald@stufft.io> - 13.1.0-1
 - Update to 13.1.0
 
 * Mon Jun 22 2015 Donald Stufft <donald@stufft.io> - 13.0.3-1
